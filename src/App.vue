@@ -3,19 +3,18 @@
     <AppLayout>
       <div class="main-grid">
         <div class="left-block">
-          <ProductForm />
+          <ProductForm @submitForm="formSubmit"/>
         </div>
         <div class="right-block">
           <ProductFilter />
-          <div class="product-card-grid">
-          <template v-for="i in 10">
-            <div class="product-card-grid__item" :key="i">
-              <ProductCard />
-            </div>
-          </template>
-          </div>
+          <transition-group class="product-card-grid" name="card" mode="out-in" tag="div">
+            <div class="product-card-grid__item" v-for="(item, index) in allProducts" :key="index">
+              <ProductCard :key="index" :name="item.name" :desc="item.desc" :link="item.link" :price="item.price"/>
+            </div>  
+          </transition-group>
         </div>
       </div>
+      <Toast :isShown="this.showSuccess" />
     </AppLayout>
   </div>
 </template>
@@ -25,6 +24,7 @@ import AppLayout from './layouts/AppLayout'
 import ProductForm from './components/ProductForm.vue'
 import ProductFilter from './components/ProductFilter.vue'
 import ProductCard from './components/ProductCard.vue'
+import Toast from './components/Toast.vue'
 
 export default {
   name: 'App',
@@ -32,7 +32,29 @@ export default {
     AppLayout,
     ProductForm,
     ProductFilter,
-    ProductCard
+    ProductCard,
+    Toast
+  },
+  data() {
+    return {
+      allProducts: [{
+        name: "Наименование товара",
+        desc: "Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк",
+        price: "10000",
+        link: "https://cdn.shopify.com/s/files/1/0441/1349/4174/products/1_polaroid_camera_1280x.jpg?v=1611942552"
+      }],
+      showSuccess: false,
+    }
+  },
+  methods: {
+    formSubmit(form) {
+      this.allProducts.push(form);
+      this.showSuccess = true;
+      setTimeout(() => {
+        this.showSuccess = false
+      }, 2000)
+      console.log('allproducts', this.allProducts);
+    }
   }
 }
 </script>
@@ -53,7 +75,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: stretch;
   &__item {
     flex: 0 0 calc(33% - 16px);
@@ -107,5 +129,14 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.card-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.card-enter, .list-leave-to {
+  opacity: 0.4;
+  float: right;
+  transform: translateX(100%);
 }
 </style>

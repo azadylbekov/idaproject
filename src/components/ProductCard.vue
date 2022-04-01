@@ -1,11 +1,11 @@
 <template>
 	<div @mouseover="isButtonShown = true" @mouseleave="isButtonShown = false" class="product-card">
-		<img src="https://photobite.uk/wp-content/uploads/2021/04/polaroid-go-white.jpg" alt="">
+		<img :src="link" alt="">
 		<div class="product-card-desc">
-			<h3 class="product-card-desc__title">Наименование товара</h3>
-			<p class="product-card-desc__para">Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк</p>
+			<h3 class="product-card-desc__title">{{ name }}</h3>
+			<p class="product-card-desc__para">{{ desc }}</p>
 			<div class="product-card-desc__price">
-				<span>10000 руб</span>
+				<span>{{ price }} руб</span>
 			</div>
 		</div>
 		<transition name="slide-up">
@@ -17,6 +17,24 @@
 <script>
 	export default {
 		name: "ProductCard",
+		props: {
+			name: {
+				type: String,
+				required: true
+			},
+			desc: {
+				type: String,
+				default: ""
+			},
+			link: {
+				type: String,
+				required: true
+			},
+			price: {
+				type: String,
+				required: true
+			}
+		},
 		data() {
 			return {
 				isButtonShown: false,

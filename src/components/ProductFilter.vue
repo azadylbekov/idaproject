@@ -1,6 +1,6 @@
 <template>
 	<div class="filter-wrapper">
-		<select class="filter-wrapper__select" id="cars" name="cars">
+		<select class="filter-wrapper__select" id="price" name="price">
 			<option value="default" selected>По умолчанию</option>
 			<option value="min">По нарастающей</option>
 			<option value="max">По убыванию</option>
@@ -29,10 +29,17 @@
 		border-radius: 4px;
 		outline: none;
 		font-size: 12px;
-		color: #B4B4B4;
+		color: #000;
 		transition: 0.3s;
 		&:focus {
 			border-color: #3F3F3F; 
+		}
+		&::placeholder {
+			color: #B4B4B4;
+		}
+		option {
+			padding: 15px;
+			font-size: #000;
 		}
 	}
 }

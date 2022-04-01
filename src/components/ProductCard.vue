@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<transition name="slide-up">
-			<button v-show="this.isButtonShown" class="product-card__delete-btn"></button>
+			<button @click="handleDelete" v-show="this.isButtonShown" class="product-card__delete-btn"></button>
 		</transition>
 	</div>
 </template>
@@ -18,6 +18,10 @@
 	export default {
 		name: "ProductCard",
 		props: {
+			id: {
+				type: Number,
+				required: true
+			},
 			name: {
 				type: String,
 				required: true
@@ -41,6 +45,9 @@
 			}
 		},
 		methods: {
+			handleDelete() {
+				this.$emit("delete", this.id)
+			}
 		}
 	}
 </script>

@@ -78,6 +78,7 @@
 			},
 			submitForm() {
 				let form = {
+					id: Date.now(),
 					name: this.name,
 					desc: this.desc,
 					link: this.link,

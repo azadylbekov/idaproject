@@ -6,12 +6,22 @@
           <ProductForm @submitForm="formSubmit"/>
         </div>
         <div class="right-block">
-          <ProductFilter />
-          <transition-group class="product-card-grid" name="card" mode="out-in" tag="div">
-            <div class="product-card-grid__item" v-for="(item, index) in allProducts" :key="index">
-              <ProductCard :key="index" :name="item.name" :desc="item.desc" :link="item.link" :price="item.price"/>
-            </div>  
-          </transition-group>
+          <ProductFilter @filterChange="handleFilter" />
+          <div v-if="isProductsFetched">
+            <transition-group class="product-card-grid" name="card" mode="out-in" tag="div">
+              <div class="product-card-grid__item" v-for="(item, index) in allProducts" :key="item.id">
+                <ProductCard
+                  @delete="deleteItem" 
+                  :key="index" 
+                  :id="item.id" 
+                  :name="item.name" 
+                  :desc="item.desc" 
+                  :link="item.link" 
+                  :price="item.price"/>
+              </div>  
+            </transition-group>
+          </div>
+          <Spinner v-else />
         </div>
       </div>
       <Toast :isShown="this.showSuccess" />
@@ -25,6 +35,7 @@ import ProductForm from './components/ProductForm.vue'
 import ProductFilter from './components/ProductFilter.vue'
 import ProductCard from './components/ProductCard.vue'
 import Toast from './components/Toast.vue'
+import Spinner from './components/Spinner.vue'
 
 export default {
   name: 'App',
@@ -33,18 +44,31 @@ export default {
     ProductForm,
     ProductFilter,
     ProductCard,
-    Toast
+    Toast,
+    Spinner
   },
   data() {
     return {
       allProducts: [{
+        id: 1648816193658,
         name: "Наименование товара",
         desc: "Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное описание товара в несколько строк",
         price: "10000",
         link: "https://cdn.shopify.com/s/files/1/0441/1349/4174/products/1_polaroid_camera_1280x.jpg?v=1611942552"
       }],
       showSuccess: false,
+      isProductsFetched: false,
     }
+  },
+  mounted() {
+    const products = JSON.parse(window.localStorage.getItem('products'));
+    if(!products) {
+      window.localStorage.setItem('products', JSON.stringify(this.allProducts))
+    }
+    else {
+      this.allProducts = products;
+    }
+    this.isProductsFetched = true;
   },
   methods: {
     formSubmit(form) {
@@ -53,7 +77,28 @@ export default {
       setTimeout(() => {
         this.showSuccess = false
       }, 2000)
-      console.log('allproducts', this.allProducts);
+      window.localStorage.setItem('products', JSON.stringify(this.allProducts))
+    },
+    deleteItem(id) {
+      this.allProducts = this.allProducts.filter(item => item.id !== id);
+      window.localStorage.setItem('products', JSON.stringify(this.allProducts))
+    },
+    handleFilter(value) {
+      if(value === 'min') {
+        this.allProducts.sort((a, b) => {
+          return parseInt(a.price) - parseInt(b.price)
+        })
+      }
+      if(value === 'max') {
+        this.allProducts.sort((a, b) => {
+          return  parseInt(b.price) - parseInt(a.price)
+        })
+      }
+      if(value === 'name') {
+        this.allProducts.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        })
+      }
     }
   }
 }
@@ -131,12 +176,16 @@ export default {
   color: #2c3e50;
 }
 
-.card-enter-active, .list-leave-active {
-  transition: all 1s;
+.card-enter-active, .card-leave-active {
+  transition: all 0.4s;
 }
-.card-enter, .list-leave-to {
-  opacity: 0.4;
-  float: right;
-  transform: translateX(100%);
+.card-enter, .card-leave-to {
+  opacity: 0;
+  transition: 0.3s;
+  // float: right;
+  transform: translateY(100px);
+}
+.card-move {
+  transition: transform 1s;
 }
 </style>

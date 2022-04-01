@@ -1,6 +1,6 @@
 <template>
 	<div class="filter-wrapper">
-		<select class="filter-wrapper__select" id="price" name="price">
+		<select @change="filterChange($event)" class="filter-wrapper__select" id="price" name="price">
 			<option value="default" selected>По умолчанию</option>
 			<option value="min">По нарастающей</option>
 			<option value="max">По убыванию</option>
@@ -11,7 +11,12 @@
 
 <script>
 	export default {
-		name: "ProductFilter"
+		name: "ProductFilter",
+		methods: {
+			filterChange(event) {
+				this.$emit("filterChange", event.target.value)
+			}
+		}
 	}
 </script>
 

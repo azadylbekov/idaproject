@@ -1,13 +1,19 @@
 # idaproject
 
-## Project setup
+## Для установки можно использовать следующие команды
 ```
 yarn install
 ```
+```
+npm install
+```
 
-### Compiles and hot-reloads for development
+### Для запуска проекта команды
 ```
 yarn serve
+```
+```
+npm run serve
 ```
 
 ### Compiles and minifies for production
